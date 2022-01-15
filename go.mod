@@ -5,14 +5,13 @@ go 1.17
 require (
 	github.com/CosmWasm/wasmd v0.20.0
 	github.com/cosmos/cosmos-sdk v0.44.5
-	github.com/cosmos/ibc-go/v2 v2.0.2
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang/protobuf v1.5.2
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/prometheus/client_golang v1.11.0
 	github.com/spf13/cast v1.4.1
-	github.com/spf13/cobra v1.2.1
+	github.com/spf13/cobra v1.3.0
 	github.com/stretchr/testify v1.7.0
 	github.com/tendermint/spm v0.1.8
 	github.com/tendermint/tendermint v0.34.15
@@ -41,6 +40,7 @@ require (
 	github.com/cosmos/btcutil v1.0.4 // indirect
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/iavl v0.17.3 // indirect
+	github.com/cosmos/ibc-go/v3 v3.0.0-alpha2
 	github.com/cosmos/ledger-cosmos-go v0.11.1 // indirect
 	github.com/cosmos/ledger-go v0.9.2 // indirect
 	github.com/danieljoos/wincred v1.0.2 // indirect
@@ -123,7 +123,7 @@ require (
 )
 
 replace (
-	github.com/CosmWasm/wasmd => github.com/cosmoscontracts/wasmd v1.0.0-juno5
+	github.com/CosmWasm/wasmd => github.com/notional-labs 5d340972dd203c9defef1095e29c0079baf36e69
 	github.com/cosmos/cosmos-sdk => github.com/cosmos/cosmos-sdk v0.44.5
 	github.com/cosmos/iavl => github.com/cosmos/iavl v0.17.3
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1

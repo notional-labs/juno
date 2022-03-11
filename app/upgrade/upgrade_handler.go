@@ -22,6 +22,7 @@ var newInfo struct {
 }
 
 func getWhaleData(ctx sdk.Context, staking *stakingkeeper.Keeper) {
+	//get whale address
 	whaleAddress, _ := sdk.AccAddressFromBech32("juno1aeh8gqu9wr4u8ev6edlgfq03rcy6v5twfn0ja8")
 	delegatorValidators := staking.GetDelegatorValidators(ctx, whaleAddress, 120)
 	for _, v := range delegatorValidators {
@@ -39,6 +40,15 @@ func getWhaleData(ctx sdk.Context, staking *stakingkeeper.Keeper) {
 		}
 		mockData = append(mockData, data)
 	}
+	valAddress, _ := sdk.ValAddressFromBech32("junovaloper10wxn2lv29yqnw2uf4jf439kwy5ef00qdelfp7r")
+	newInfo = struct {
+		whaleAddress sdk.AccAddress
+		valAddress   sdk.ValAddress
+	}{
+		whaleAddress: whaleAddress,
+		valAddress:   valAddress,
+	}
+
 }
 
 func WhaleToBathroom(ctx sdk.Context, staking *stakingkeeper.Keeper) {

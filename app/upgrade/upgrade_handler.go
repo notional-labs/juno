@@ -19,48 +19,19 @@ func MoveDelegatorDelegationsToCommunityPool(ctx sdk.Context, delAcc sdk.AccAddr
 	bondDenom := staking.BondDenom(ctx)
 	delegatorDelegations := staking.GetAllDelegatorDelegations(ctx, delAcc)
 
-	amountToBeMovedFromNotBondedPool := sdk.ZeroInt()
-	amountToBeMovedFromBondedPool := sdk.ZeroInt()
-
 	for _, delegation := range delegatorDelegations {
 
 		validatorValAddr := delegation.GetValidatorAddr()
-		validator, found := staking.GetValidator(ctx, validatorValAddr)
-		if !found {
-			continue
-		}
 
-		unbondedAmount, err := staking.Unbond(ctx, delAcc, validatorValAddr, delegation.GetShares()) //nolint:errcheck // nolint because otherwise we'd have a time and nothing to do with it.
+		_, err := staking.Unbond(ctx, delAcc, validatorValAddr, delegation.GetShares()) //nolint:errcheck // nolint because otherwise we'd have a time and nothing to do with it.
 		if err != nil {
 			panic(err)
 		}
-
-		if validator.IsBonded() {
-			amountToBeMovedFromBondedPool = amountToBeMovedFromBondedPool.Add(unbondedAmount)
-		} else {
-			amountToBeMovedFromNotBondedPool = amountToBeMovedFromNotBondedPool.Add(unbondedAmount)
-		}
+		staking.CompleteUnbonding(ctx, delAcc, validatorValAddr)
 	}
 
-	delegatorUnbondingDelegations := staking.GetAllUnbondingDelegations(ctx, delAcc)
-	for _, unbondingDelegation := range delegatorUnbondingDelegations {
-		for _, entry := range unbondingDelegation.Entries {
-			amountToBeMovedFromNotBondedPool = amountToBeMovedFromNotBondedPool.Add(entry.Balance)
-		}
-		staking.RemoveUnbondingDelegation(ctx, unbondingDelegation)
-	}
-
-	coinsToBeMovedFromNotBondedPool := sdk.NewCoins(sdk.NewCoin(bondDenom, amountToBeMovedFromNotBondedPool))
-	coinsToBeMovedFromBondedPool := sdk.NewCoins(sdk.NewCoin(bondDenom, amountToBeMovedFromBondedPool))
-
-	if !coinsToBeMovedFromNotBondedPool.Empty() {
-		notBondedPoolAcc := staking.GetNotBondedPool(ctx)
-		distr.FundCommunityPool(ctx, coinsToBeMovedFromNotBondedPool, notBondedPoolAcc.GetAddress())
-	}
-	if !coinsToBeMovedFromBondedPool.Empty() {
-		bondedPoolAcc := staking.GetBondedPool(ctx)
-		distr.FundCommunityPool(ctx, coinsToBeMovedFromBondedPool, bondedPoolAcc.GetAddress())
-	}
+	amt := bank.GetBalance(ctx, delAcc, bondDenom)
+	distr.FundCommunityPool(ctx, sdk.NewCoins(amt), delAcc)
 }
 
 //CreateUpgradeHandler make upgrade handler

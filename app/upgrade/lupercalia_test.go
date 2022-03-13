@@ -33,10 +33,19 @@ var (
 	commissionRates = types.NewCommissionRates(sdk.NewDecWithPrec(5, 2), sdk.NewDecWithPrec(5, 2), sdk.NewDecWithPrec(5, 2))
 )
 
+var (
+	genTokens        = sdk.NewIntFromUint64(100000000000)
+	bondTokens       = sdk.NewIntFromUint64(80000000000)
+	escapeBondTokens = sdk.NewIntFromUint64(25000000000)
+	genCoin          = sdk.NewCoin(sdk.DefaultBondDenom, genTokens)
+	bondCoin         = sdk.NewCoin(sdk.DefaultBondDenom, bondTokens)
+	escapeBondCoin   = sdk.NewCoin(sdk.DefaultBondDenom, escapeBondTokens)
+)
+
 /*
 	Test site for lupercalia
 */
-func lupercaliaHunt(
+func lupercaliaHuntVerbalDebug(
 	app *junoapp.App,
 ) {
 	ctxCheck := app.BaseApp.NewContext(true, tmproto.Header{})
@@ -109,6 +118,77 @@ func lupercaliaHunt(
 	fmt.Printf("Distribution module amount = %v \n", distAmount)
 }
 
+func checkLupercalia(t *testing.T, app *junoapp.App) {
+	ctxCheck := app.BaseApp.NewContext(true, tmproto.Header{})
+	maxJunoPerAcc := sdk.NewIntFromUint64(50000000000)
+	completionTime := ctxCheck.BlockHeader().Time.Add(app.StakingKeeper.UnbondingTime(ctxCheck))
+
+	initialBondPool := app.BankKeeper.GetBalance(ctxCheck, app.StakingKeeper.GetBondedPool(ctxCheck).GetAddress(), "stake").Amount
+	initialUnbondPool := app.BankKeeper.GetBalance(ctxCheck, app.StakingKeeper.GetNotBondedPool(ctxCheck).GetAddress(), "stake").Amount
+	initialCommunityPool := app.BankKeeper.GetBalance(ctxCheck, app.AccountKeeper.GetModuleAccount(ctxCheck, distrtypes.ModuleName).GetAddress(), "stake").Amount
+
+	dvPair := app.StakingKeeper.GetUBDQueueTimeSlice(ctxCheck, completionTime)
+
+	fmt.Printf("dvPair length = %d \n", len(dvPair))
+
+	for i, pair := range dvPair {
+		fmt.Printf("UBD queue item %d = \n%v \n", i, pair)
+	}
+
+	//====== ADJUSTING ======
+	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+
+	// unbond the accAddr delegations, send all the unbonding and unbonded tokens to the community pool
+	bankBaseKeeper, _ := app.BankKeeper.(bankkeeper.BaseKeeper)
+
+	lupercalia.MoveDelegatorDelegationsToCommunityPool(ctxCheck, addr2, &app.StakingKeeper, &bankBaseKeeper, &app.DistrKeeper)
+	// send 50k juno from the community pool to the accAddr if the master account has less than 50k juno
+	accAddrAmount := bankBaseKeeper.GetBalance(ctxCheck, addr2, app.StakingKeeper.BondDenom(ctxCheck)).Amount
+	if sdk.NewIntFromUint64(50000000000).GT(accAddrAmount) {
+		bankBaseKeeper.SendCoinsFromModuleToAccount(ctxCheck, distrtypes.ModuleName, addr2, sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.BondDenom(ctxCheck), sdk.NewIntFromUint64(50000000000).Sub(accAddrAmount))))
+	}
+
+	app.EndBlock(abci.RequestEndBlock{})
+	app.Commit()
+
+	//====== END ADJUSTING ======
+
+	//1. check if fund is moved from unbond and bond pool to community pool
+	//acc2 is supposed to lose bondTokens amount to community pool
+	afterBondPool := app.BankKeeper.GetBalance(ctxCheck, app.StakingKeeper.GetBondedPool(ctxCheck).GetAddress(), "stake").Amount
+	afterUnbondPool := app.BankKeeper.GetBalance(ctxCheck, app.StakingKeeper.GetNotBondedPool(ctxCheck).GetAddress(), "stake").Amount
+
+	initial := initialBondPool.Add(initialUnbondPool)
+	later := afterBondPool.Add(afterUnbondPool)
+	require.Equal(t, initial.Sub(bondTokens), later)
+
+	//2. check if acc2 has exactly 50k juno
+	afterAcc2Amount := app.BankKeeper.GetBalance(ctxCheck, addr2, sdk.DefaultBondDenom).Amount
+	require.Equal(t, maxJunoPerAcc, afterAcc2Amount)
+
+	//3. check if community pool has received correct amount
+	//because genTokens and bondTokens are fixed. Therefore, this testcases assume that remaining amount of acc2 before refund is smaller than maxJunoPerAcc.
+	refundJunoToAcc := maxJunoPerAcc.Sub(genTokens.Sub(bondTokens))
+	trueJunoToTransfer := later.Sub(refundJunoToAcc)
+	afterCommunityPool := app.BankKeeper.GetBalance(ctxCheck, app.AccountKeeper.GetModuleAccount(ctxCheck, distrtypes.ModuleName).GetAddress(), "stake").Amount
+
+	require.Equal(t, initialCommunityPool.Add(trueJunoToTransfer), afterCommunityPool)
+
+	//4. check if all unbonding delegations are removed
+	unbondDels := app.StakingKeeper.GetAllUnbondingDelegations(ctxCheck, addr2)
+
+	require.Equal(t, len(unbondDels), 0)
+
+	dvPair = app.StakingKeeper.GetUBDQueueTimeSlice(ctxCheck, completionTime)
+
+	fmt.Printf("dvPair length = %d \n", len(dvPair))
+
+	for i, pair := range dvPair {
+		fmt.Printf("UBD queue item %d = \n%v \n", i, pair)
+	}
+}
+
 func checkValidator(t *testing.T, app *junoapp.App, addr sdk.ValAddress, expFound bool) types.Validator {
 	ctxCheck := app.BaseApp.NewContext(true, tmproto.Header{})
 	validator, found := app.StakingKeeper.GetValidator(ctxCheck, addr)
@@ -135,19 +215,10 @@ func checkDelegation(
 }
 
 func TestUndelegate(t *testing.T) {
-	genTokens := sdk.NewIntFromUint64(100000000000)
-	bondTokens := sdk.NewIntFromUint64(80000000000)
-	escapeBondTokens := sdk.NewIntFromUint64(25000000000)
-	genCoin := sdk.NewCoin(sdk.DefaultBondDenom, genTokens)
-	bondCoin := sdk.NewCoin(sdk.DefaultBondDenom, bondTokens)
-	escapeBondCoin := sdk.NewCoin(sdk.DefaultBondDenom, escapeBondTokens)
-
 	// acc1 is to create validator
 	acc1 := &authtypes.BaseAccount{Address: addr1.String()}
 	// acc2 is to delegate funds to acc1 validator
 	acc2 := &authtypes.BaseAccount{Address: addr2.String()}
-
-	fmt.Printf("acc1 val address = %s, acc2 address = %s \n", sdk.ValAddress(addr1).String(), addr2.String())
 
 	accs := authtypes.GenesisAccounts{acc1, acc2}
 	balances := []banktypes.Balance{
@@ -213,5 +284,6 @@ func TestUndelegate(t *testing.T) {
 	// balance should be the same because bonding not yet complete
 	checkBalance(t, app, addr2, sdk.Coins{genCoin.Sub(bondCoin)})
 
-	lupercaliaHunt(app)
+	//lupercaliaHuntVerbalDebug(app)
+	checkLupercalia(t, app)
 }

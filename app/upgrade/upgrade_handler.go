@@ -37,8 +37,6 @@ func MoveDelegatorDelegationsToCommunityPool(ctx sdk.Context, delAcc sdk.AccAddr
 			fmt.Println(entry.CompletionTime)
 			entry.CompletionTime = ctx.BlockHeader().Time
 			fmt.Println("After")
-			// ubd.Entries[i] =
-
 			fmt.Println(entry.IsMature(ctx.BlockTime()))
 			fmt.Println(entry.CompletionTime)
 

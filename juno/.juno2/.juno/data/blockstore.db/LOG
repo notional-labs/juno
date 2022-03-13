@@ -1,0 +1,41 @@
+=============== Mar 12, 2022 (+07) ===============
+00:22:10.505345 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+00:22:10.517222 db@open opening
+00:22:10.518881 version@stat F·[] S·0B[] Sc·[]
+00:22:10.524916 db@janitor F·2 G·0
+00:22:10.524990 db@open done T·7.720221ms
+00:30:39.828968 db@close closing
+00:30:39.829063 db@close done T·93.738µs
+=============== Mar 12, 2022 (+07) ===============
+16:30:04.810266 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+16:30:04.810343 version@stat F·[] S·0B[] Sc·[]
+16:30:04.810356 db@open opening
+16:30:04.810380 journal@recovery F·1
+16:30:04.810466 journal@recovery recovering @1
+16:30:04.817500 memdb@flush created L0@2 N·600 S·95KiB "BH:..0b0,v501":"blo..ore,v6"
+16:30:04.817856 version@stat F·[1] S·95KiB[95KiB] Sc·[0.25]
+16:30:04.840152 db@janitor F·3 G·0
+16:30:04.840169 db@open done T·29.809168ms
+16:30:26.607819 db@close closing
+16:30:26.607885 db@close done T·63.793µs
+=============== Mar 12, 2022 (+07) ===============
+16:30:40.266911 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+16:30:40.267050 version@stat F·[1] S·95KiB[95KiB] Sc·[0.25]
+16:30:40.267071 db@open opening
+16:30:40.267118 journal@recovery F·1
+16:30:40.268276 journal@recovery recovering @3
+16:30:40.274117 memdb@flush created L0@5 N·18 S·2KiB "BH:..520,v604":"blo..ore,v607"
+16:30:40.274280 version@stat F·[2] S·97KiB[97KiB] Sc·[0.50]
+16:30:40.297665 db@janitor F·4 G·0
+16:30:40.297694 db@open done T·30.615799ms
+=============== Mar 12, 2022 (+07) ===============
+16:31:09.548081 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+16:31:09.548174 version@stat F·[2] S·97KiB[97KiB] Sc·[0.50]
+16:31:09.548191 db@open opening
+16:31:09.548229 journal@recovery F·1
+16:31:09.549287 journal@recovery recovering @6
+16:31:09.549478 version@stat F·[2] S·97KiB[97KiB] Sc·[0.50]
+16:31:09.572678 db@janitor F·4 G·0
+16:31:09.572733 db@open done T·24.535717ms
+16:38:43.355304 db@close closing
+16:38:43.355355 db@close done T·51.421µs

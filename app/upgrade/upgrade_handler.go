@@ -1,6 +1,8 @@
 package lupercalia
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
@@ -12,55 +14,51 @@ import (
 )
 
 var addressesToBeAdjusted = []string{
-	"juno1aeh8gqu9wr4u8ev6edlgfq03rcy6v5twfn0ja8",
+	"juno1ulhp0epf6hsad3jw2rwuqn05qy49qe3l0q6jqd",
 }
 
 func MoveDelegatorDelegationsToCommunityPool(ctx sdk.Context, delAcc sdk.AccAddress, staking *stakingkeeper.Keeper, bank *bankkeeper.BaseKeeper, distr *distrkeeper.Keeper) {
 	bondDenom := staking.BondDenom(ctx)
 	delegatorDelegations := staking.GetAllDelegatorDelegations(ctx, delAcc)
 
-	amountToBeMovedFromNotBondedPool := sdk.ZeroInt()
-	amountToBeMovedFromBondedPool := sdk.ZeroInt()
-
 	for _, delegation := range delegatorDelegations {
 
 		validatorValAddr := delegation.GetValidatorAddr()
-		validator, found := staking.GetValidator(ctx, validatorValAddr)
-		if !found {
-			continue
-		}
 
-		unbondedAmount, err := staking.Unbond(ctx, delAcc, validatorValAddr, delegation.GetShares()) //nolint:errcheck // nolint because otherwise we'd have a time and nothing to do with it.
+		_, err := staking.Unbond(ctx, delAcc, validatorValAddr, delegation.GetShares()) //nolint:errcheck // nolint because otherwise we'd have a time and nothing to do with it.
 		if err != nil {
 			panic(err)
 		}
 
-		if validator.IsBonded() {
-			amountToBeMovedFromBondedPool = amountToBeMovedFromBondedPool.Add(unbondedAmount)
-		} else {
-			amountToBeMovedFromNotBondedPool = amountToBeMovedFromNotBondedPool.Add(unbondedAmount)
+		//set entries time = ctxTime
+		ubd, _ := staking.GetUnbondingDelegation(ctx, delAcc, validatorValAddr)
+		for _, entry := range ubd.Entries {
+			fmt.Println("Before")
+			fmt.Println(entry.CompletionTime)
+			entry.CompletionTime = ctx.BlockHeader().Time
+			fmt.Println("After")
+			// ubd.Entries[i] =
+
+			fmt.Println(entry.IsMature(ctx.BlockTime()))
+			fmt.Println(entry.CompletionTime)
+
 		}
 	}
 
-	delegatorUnbondingDelegations := staking.GetAllUnbondingDelegations(ctx, delAcc)
-	for _, unbondingDelegation := range delegatorUnbondingDelegations {
-		for _, entry := range unbondingDelegation.Entries {
-			amountToBeMovedFromNotBondedPool = amountToBeMovedFromNotBondedPool.Add(entry.Balance)
+	for _, delegation := range delegatorDelegations {
+		validatorValAddr := delegation.GetValidatorAddr()
+		ubd, _ := staking.GetUnbondingDelegation(ctx, delAcc, validatorValAddr)
+		fmt.Println(ubd)
+		for _, entry := range ubd.Entries {
+			fmt.Println("================")
+			fmt.Println(entry.CompletionTime)
+			fmt.Println("================")
 		}
-		staking.RemoveUnbondingDelegation(ctx, unbondingDelegation)
+		staking.CompleteUnbonding(ctx, delAcc, validatorValAddr)
 	}
 
-	coinsToBeMovedFromNotBondedPool := sdk.NewCoins(sdk.NewCoin(bondDenom, amountToBeMovedFromNotBondedPool))
-	coinsToBeMovedFromBondedPool := sdk.NewCoins(sdk.NewCoin(bondDenom, amountToBeMovedFromBondedPool))
-
-	if !coinsToBeMovedFromNotBondedPool.Empty() {
-		notBondedPoolAcc := staking.GetNotBondedPool(ctx)
-		distr.FundCommunityPool(ctx, coinsToBeMovedFromNotBondedPool, notBondedPoolAcc.GetAddress())
-	}
-	if !coinsToBeMovedFromBondedPool.Empty() {
-		bondedPoolAcc := staking.GetBondedPool(ctx)
-		distr.FundCommunityPool(ctx, coinsToBeMovedFromBondedPool, bondedPoolAcc.GetAddress())
-	}
+	amt := bank.GetBalance(ctx, delAcc, bondDenom)
+	distr.FundCommunityPool(ctx, sdk.NewCoins(amt), delAcc)
 }
 
 //CreateUpgradeHandler make upgrade handler

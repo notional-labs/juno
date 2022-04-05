@@ -1,0 +1,6 @@
+./collect.go
+./doc.go
+./genesis.go
+./gentx.go
+./module.go
+./utils.go

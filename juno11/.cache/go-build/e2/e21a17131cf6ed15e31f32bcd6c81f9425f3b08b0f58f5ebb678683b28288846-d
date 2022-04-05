@@ -1,0 +1,6 @@
+./doc.go
+./keys.go
+./paramset.go
+./querier.go
+./subspace.go
+./table.go

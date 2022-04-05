@@ -1,0 +1,3 @@
+./encoding.go
+./privkey.go
+./pubkey.go

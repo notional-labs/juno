@@ -1,0 +1,3 @@
+./iavl_api.pb.go
+./iavl_api.pb.gw.go
+./proof.pb.go

@@ -1,0 +1,6 @@
+./amino_signing.go
+./codec.go
+./stdsign.go
+./stdsignmsg.go
+./stdtx.go
+./stdtx_builder.go

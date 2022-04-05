@@ -1,0 +1,5 @@
+./any.go
+./any.pb.go
+./compat.go
+./doc.go
+./interface_registry.go

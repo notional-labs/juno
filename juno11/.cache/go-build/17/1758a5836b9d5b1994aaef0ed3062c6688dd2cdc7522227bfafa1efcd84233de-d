@@ -1,0 +1,4 @@
+./genesis.go
+./solomachine.go
+./solomachine.pb.go
+./store.go

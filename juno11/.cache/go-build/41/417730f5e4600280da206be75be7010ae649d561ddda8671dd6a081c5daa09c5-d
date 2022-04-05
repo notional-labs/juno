@@ -1,0 +1,5 @@
+./highwayhash.go
+./highwayhash_amd64.go
+./highwayhash_generic.go
+./highwayhashAVX2_amd64.s
+./highwayhash_amd64.s

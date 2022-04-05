@@ -1,0 +1,17 @@
+./codec.go
+./coin.go
+./errors.go
+./events.go
+./expected_keepers.go
+./genesis.go
+./genesis.pb.go
+./keys.go
+./msgs.go
+./packet.go
+./packet.pb.go
+./params.go
+./query.pb.go
+./query.pb.gw.go
+./trace.go
+./transfer.pb.go
+./tx.pb.go

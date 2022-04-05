@@ -1,0 +1,14 @@
+./accept.go
+./close.go
+./close_notjs.go
+./compress.go
+./compress_notjs.go
+./conn.go
+./conn_notjs.go
+./dial.go
+./doc.go
+./frame.go
+./netconn.go
+./read.go
+./stringer.go
+./write.go

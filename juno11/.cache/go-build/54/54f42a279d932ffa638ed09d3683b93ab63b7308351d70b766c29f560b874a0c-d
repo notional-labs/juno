@@ -1,0 +1,9 @@
+./codec.go
+./doc.go
+./errors.go
+./info.go
+./keyring.go
+./legacy.go
+./output.go
+./signing_algorithms.go
+./types.go

@@ -1,0 +1,3 @@
+./doc.go
+./ed25519.go
+./keys.pb.go

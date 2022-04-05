@@ -1,0 +1,7 @@
+./block.pb.go
+./canonical.pb.go
+./events.pb.go
+./evidence.pb.go
+./params.pb.go
+./types.pb.go
+./validator.pb.go

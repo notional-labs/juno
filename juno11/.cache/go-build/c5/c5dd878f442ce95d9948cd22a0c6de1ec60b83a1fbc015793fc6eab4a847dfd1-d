@@ -1,0 +1,3 @@
+./migrate.go
+./store.go
+./types.go

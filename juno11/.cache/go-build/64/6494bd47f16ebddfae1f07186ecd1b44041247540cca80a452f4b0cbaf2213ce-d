@@ -1,0 +1,9 @@
+./btcec.go
+./ciphering.go
+./doc.go
+./field.go
+./precompute.go
+./privkey.go
+./pubkey.go
+./secp256k1.go
+./signature.go

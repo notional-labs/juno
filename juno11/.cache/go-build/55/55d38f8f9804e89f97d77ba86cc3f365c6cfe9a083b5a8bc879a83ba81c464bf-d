@@ -1,0 +1,6 @@
+./annotations.pb.go
+./client.pb.go
+./field_behavior.pb.go
+./http.pb.go
+./resource.pb.go
+./routing.pb.go

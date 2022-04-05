@@ -1,0 +1,5 @@
+./doc.go
+./encoding.go
+./params.go
+./proto.go
+./weights.go

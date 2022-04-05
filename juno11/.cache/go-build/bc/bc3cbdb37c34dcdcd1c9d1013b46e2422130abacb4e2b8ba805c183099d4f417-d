@@ -1,0 +1,6 @@
+./collection.go
+./item.go
+./prompt.go
+./secret.go
+./service.go
+./session.go

@@ -1,0 +1,5 @@
+./collect.go
+./gentx.go
+./init.go
+./migrate.go
+./validate_genesis.go

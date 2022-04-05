@@ -1,0 +1,6 @@
+./amino.go
+./amino_codec.go
+./codec.go
+./json.go
+./proto_codec.go
+./yaml.go

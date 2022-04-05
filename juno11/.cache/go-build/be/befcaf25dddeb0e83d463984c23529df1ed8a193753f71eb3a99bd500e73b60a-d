@@ -1,0 +1,4 @@
+./decoder.go
+./genesis.go
+./operations.go
+./params.go

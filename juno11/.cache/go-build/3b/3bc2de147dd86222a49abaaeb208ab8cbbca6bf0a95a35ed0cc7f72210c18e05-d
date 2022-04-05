@@ -1,0 +1,12 @@
+./amino.go
+./binary-decode.go
+./binary-encode.go
+./codec.go
+./decoder.go
+./deep_copy.go
+./doc.go
+./encoder.go
+./json-decode.go
+./json-encode.go
+./reflect.go
+./version.go

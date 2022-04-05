@@ -1,0 +1,5 @@
+./compress.go
+./ics23.go
+./ops.go
+./proof.go
+./proofs.pb.go

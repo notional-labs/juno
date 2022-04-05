@@ -1,0 +1,7 @@
+./fe.go
+./fe_mul_amd64.go
+./fe_square_amd64.go
+./mul.go
+./mul_bits.go
+./fe_mul_amd64.s
+./fe_square_amd64.s

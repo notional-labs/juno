@@ -1,0 +1,7 @@
+./client.go
+./detector.go
+./doc.go
+./errors.go
+./setup.go
+./trust_options.go
+./verifier.go

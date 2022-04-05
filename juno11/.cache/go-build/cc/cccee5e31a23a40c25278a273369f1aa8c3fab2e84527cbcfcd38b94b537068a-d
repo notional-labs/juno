@@ -1,0 +1,10 @@
+./iterator.go
+./mock_failure.go
+./mocks.go
+_cgo_gotypes.go
+callbacks.cgo1.go
+callbacks_cgo.cgo1.go
+lib.cgo1.go
+link_std.cgo1.go
+memory.cgo1.go
+_cgo_import.go

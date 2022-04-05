@@ -1,0 +1,12 @@
+./deposit.go
+./grpc_query.go
+./hooks.go
+./invariants.go
+./keeper.go
+./migrations.go
+./msg_server.go
+./params.go
+./proposal.go
+./querier.go
+./tally.go
+./vote.go

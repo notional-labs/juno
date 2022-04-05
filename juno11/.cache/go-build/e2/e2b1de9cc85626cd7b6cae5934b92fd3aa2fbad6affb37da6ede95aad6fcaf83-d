@@ -1,0 +1,4 @@
+./doc.go
+./pattern.go
+./readerfactory.go
+./trie.go

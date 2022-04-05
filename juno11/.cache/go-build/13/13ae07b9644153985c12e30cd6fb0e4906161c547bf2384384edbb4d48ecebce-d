@@ -1,0 +1,12 @@
+./client_state.go
+./codec.go
+./consensus_state.go
+./errors.go
+./header.go
+./misbehaviour.go
+./misbehaviour_handle.go
+./proof.go
+./proposal_handle.go
+./solomachine.go
+./solomachine.pb.go
+./update.go

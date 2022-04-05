@@ -1,0 +1,10 @@
+./edwards25519.go
+./fe.go
+./fe_amd64.go
+./fe_generic.go
+./fe_mul_bits.go
+./scalar.go
+./scalarmult.go
+./table_constants.go
+./tables.go
+./fe_amd64.s

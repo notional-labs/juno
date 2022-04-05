@@ -1,0 +1,8 @@
+./array.go
+./config.go
+./file.go
+./keyring.go
+./kwallet.go
+./libsecret.go
+./pass.go
+./prompt.go

@@ -1,0 +1,5 @@
+./genesis.pb.go
+./keys.go
+./migrate.go
+./staking.pb.go
+./types.go

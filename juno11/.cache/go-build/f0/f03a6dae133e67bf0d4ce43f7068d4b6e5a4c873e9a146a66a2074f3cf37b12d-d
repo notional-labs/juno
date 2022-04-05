@@ -1,0 +1,5 @@
+./colorlogger.go
+./colorwriter_others.go
+./term.go
+./terminal_linux.go
+./terminal_notwindows.go

@@ -1,0 +1,13 @@
+./add.go
+./codec.go
+./delete.go
+./export.go
+./import.go
+./list.go
+./migrate.go
+./mnemonic.go
+./parse.go
+./root.go
+./show.go
+./types.go
+./utils.go

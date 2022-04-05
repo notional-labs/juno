@@ -1,0 +1,4 @@
+./amino.go
+./codec.go
+./keys.pb.go
+./multisig.go

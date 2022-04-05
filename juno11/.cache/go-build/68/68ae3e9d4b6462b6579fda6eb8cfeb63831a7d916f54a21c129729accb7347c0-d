@@ -1,0 +1,9 @@
+./animal.go
+./codec.go
+./grpc_query.go
+./msg_server.go
+./query.pb.go
+./testdata.pb.go
+./tx.go
+./tx.pb.go
+./unknonwnproto.pb.go

@@ -1,0 +1,14 @@
+./gen_node_key.go
+./gen_validator.go
+./init.go
+./light.go
+./probe_upnp.go
+./replay.go
+./reset_priv_validator.go
+./rollback.go
+./root.go
+./run_node.go
+./show_node_id.go
+./show_validator.go
+./testnet.go
+./version.go

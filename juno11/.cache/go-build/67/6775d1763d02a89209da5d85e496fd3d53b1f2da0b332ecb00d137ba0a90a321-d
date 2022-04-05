@@ -1,0 +1,3 @@
+./keys.pb.go
+./secp256k1.go
+./secp256k1_nocgo.go

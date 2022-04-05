@@ -1,0 +1,5 @@
+./ante.go
+./app.go
+./export.go
+./genesis.go
+./wasm_config.go

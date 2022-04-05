@@ -1,0 +1,3 @@
+./flags.go
+./query.go
+./tx.go

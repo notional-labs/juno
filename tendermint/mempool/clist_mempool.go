@@ -104,6 +104,8 @@ func NewCListMempool(
 	for _, option := range options {
 		option(mempool)
 	}
+	fmt.Println("mem pool")
+	fmt.Println(config.CacheSize)
 	return mempool
 }
 
@@ -151,7 +153,6 @@ func (mem *CListMempool) InitWAL() error {
 	if err != nil {
 		return fmt.Errorf("can't open autofile %s: %w", walFile, err)
 	}
-
 	mem.wal = af
 	return nil
 }

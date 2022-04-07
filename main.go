@@ -62,22 +62,43 @@ func decodeTxFromBase64(base64Tx string) (sdk.Tx, error) {
 	return sdk_tx, nil
 }
 
+func realDecode(base64Tx string) (string, error) {
+	var txBytes []byte
+
+	txBytes, err := base64.StdEncoding.DecodeString(base64Tx)
+
+	if err != nil {
+		return "", err
+	}
+
+	encoding := cosmoscmd.MakeEncodingConfig(app.ModuleBasics)
+	tx, err := encoding.TxConfig.TxDecoder()(txBytes)
+	if err != nil {
+		return "", err
+	}
+
+	json, err := encoding.TxConfig.TxJSONEncoder()(tx)
+	if err != nil {
+		return "", err
+	}
+
+	return string(json), nil
+}
+
 func main() {
 	base64Txs, err := LoadTxsFromFile("test_txs")
 	if err != nil {
 		panic(err)
 	}
 	for i, base64tx := range base64Txs {
-		sdk_tx, err := decodeTxFromBase64(base64tx)
+		sdk_tx, err := realDecode(base64tx)
 		fmt.Println("tx number " + strconv.Itoa(i))
 		if err != nil {
 			fmt.Println(err.Error())
 			continue
 		}
+		fmt.Println(sdk_tx)
 
-		for _, i := range sdk_tx.GetMsgs() {
-			fmt.Printf("%+v\n", i)
-		}
 	}
 
 }

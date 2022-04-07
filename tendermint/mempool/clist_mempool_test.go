@@ -472,7 +472,9 @@ func TestMempoolCloseWAL(t *testing.T) {
 	require.Equal(t, sum1, sum2, "expected no change to the WAL after invoking CloseWAL() since it was discarded")
 
 	// 8. Sanity check to ensure that the WAL file still exists
+
 	m3, err := filepath.Glob(filepath.Join(rootDir, "*"))
+	require.Equal(t, 1, filepath.Join(rootDir, "*"), "expecting the wal match in")
 	require.Nil(t, err, "successful globbing expected")
 	require.Equal(t, 1, len(m3), "expecting the wal match in")
 }
